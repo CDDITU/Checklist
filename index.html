@@ -13,7 +13,6 @@
 </head>
 <body class="bg-slate-50 font-sans text-slate-800 min-h-screen flex flex-col">
 
-    <!-- Topbar Adaptável -->
     <header class="bg-blue-700 text-white shadow-md p-4 sticky top-0 z-20">
         <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
             <h1 class="text-lg sm:text-xl font-bold flex items-center gap-2">
@@ -25,7 +24,6 @@
         </div>
     </header>
 
-    <!-- Menu de Navegação Responsivo -->
     <nav class="bg-white border-b border-slate-200 sticky top-[60px] sm:top-[64px] z-20 shadow-sm overflow-x-auto custom-scroll">
         <div class="container mx-auto flex min-w-[480px] sm:min-w-0 justify-around">
             <button onclick="switchTab('checklists-tab')" id="btn-checklists-tab" class="flex-1 py-3 px-2 text-center text-xs sm:text-sm text-slate-600 hover:text-blue-600 font-medium transition tab-active">
@@ -43,10 +41,8 @@
         </div>
     </nav>
 
-    <!-- Conteúdo Principal -->
     <main class="container mx-auto p-3 sm:p-6 max-w-5xl flex-grow">
 
-        <!-- ================= ABAS DE CHECKLISTS ================= -->
         <section id="checklists-tab" class="tab-content">
             <div class="grid grid-cols-4 gap-1.5 sm:flex sm:justify-center sm:gap-2 mb-5">
                 <button onclick="filterPeriod('todos')" id="btn-p-todos" class="py-2.5 sm:px-5 bg-blue-600 text-white text-xs sm:text-sm rounded-xl font-semibold shadow">Todos</button>
@@ -60,7 +56,6 @@
             </div>
         </section>
 
-        <!-- ================= ABA DO DASHBOARD ================= -->
         <section id="dashboard-tab" class="tab-content hidden">
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
                 <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-center">
@@ -86,7 +81,6 @@
             </div>
         </section>
 
-        <!-- ================= ABA DE HISTÓRICO ================= -->
         <section id="history-tab" class="tab-content hidden">
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                 <div class="p-4 border-b border-slate-100 bg-slate-50">
@@ -112,9 +106,7 @@
             </div>
         </section>
 
-        <!-- ================= ABA DE CONFIGURAÇÕES ================= -->
         <section id="admin-tab" class="tab-content hidden">
-            <!-- BLOCO 1: CADASTRO DE TAREFAS -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
                 <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
                     <h3 class="text-base font-bold mb-4 text-blue-700 border-b border-slate-100 pb-2">➕ Cadastrar Nova Rotina</h3>
@@ -145,7 +137,6 @@
                 </div>
             </div>
 
-            <!-- BLOCO 2: CADASTRO DE FUNCIONÁRIOS -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
                     <h3 class="text-base font-bold mb-4 text-emerald-700 border-b border-slate-100 pb-2">👤 Cadastrar Funcionário / Operador</h3>
@@ -180,7 +171,6 @@
 
     </main>
 
-    <!-- Modal de Identificação Otimizado com Select de Funcionários -->
     <div id="auth-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl shadow-xl p-5 w-full max-w-sm border border-slate-100">
             <h3 class="text-base font-bold mb-1 flex items-center gap-2 text-slate-800">
@@ -194,8 +184,7 @@
                 <div>
                     <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 tracking-wider">Quem está operando?</label>
                     <select id="modal-user-select" class="w-full border border-slate-200 p-3 rounded-xl font-semibold text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-                        <!-- Preenchido dinamicamente com os funcionários ativos -->
-                    </select>
+                        </select>
                 </div>
             </div>
             
@@ -206,7 +195,6 @@
         </div>
     </div>
 
-    <!-- Firebase SDK V10 -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { 
@@ -242,7 +230,7 @@
             renderChecklists();
             renderAdminTaskList();
             updateDashboard();
-        });
+        }, (error) => { console.error("Erro ao ler tarefas: ", error); });
 
         // Escuta coleção de funcionários cadastrados
         onSnapshot(query(collection(db, "employees"), orderBy("name")), (snapshot) => {
@@ -250,7 +238,7 @@
             snapshot.forEach(doc => { allEmployees.push({ id: doc.id, ...doc.data() }); });
             renderAdminEmployeeList();
             populateModalSelect();
-        });
+        }, (error) => { console.error("Erro ao ler funcionários: ", error); });
 
         // Escuta histórico de Logs
         const historyQuery = query(collection(db, "history"), orderBy("timestamp", "desc"), limit(25));
@@ -258,7 +246,7 @@
             const tbody = document.getElementById('history-table-body');
             tbody.innerHTML = '';
             if(snapshot.empty) {
-                tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-6 text-center text-slate-400">Nenhum registro hoje.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-6 text-center text-slate-400">Nenhum registro encontrado hoje.</td></tr>`;
                 return;
             }
             snapshot.forEach(doc => {
@@ -294,7 +282,7 @@
 
             for (const systemName in grouped) {
                 const card = document.createElement('div');
-                card.className = "bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden";
+                card.className = "bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-4";
                 
                 let headerHTML = `
                     <div class="bg-slate-50/80 px-4 py-3 border-b border-slate-100">
@@ -407,19 +395,23 @@
             return 'bg-purple-50 text-purple-700 border border-purple-100';
         }
 
-        // Evento: Cadastrar Rotina
+        // CORREÇÃO CRÍTICA: Agora injeta chaves de controle vazias exigidas pelas regras do Firebase
         document.getElementById('form-add-task').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const system = document.getElementById('input-system').value.trim();
+            const system = document.getElementById('input-system').value.trim().toUpperCase();
             const description = document.getElementById('input-task').value.trim();
             const period = document.getElementById('select-period').value;
             try {
                 await addDoc(collection(db, "tasks"), {
-                    system: system, description: description, period: period,
-                    lastCheckedDate: "", checkedBy: "", checkedTime: ""
+                    system: system, 
+                    description: description, 
+                    period: period,
+                    lastCheckedDate: "", 
+                    checkedBy: "", 
+                    checkedTime: ""
                 });
                 document.getElementById('form-add-task').reset();
-            } catch (error) { alert("Erro: " + error.message); }
+            } catch (error) { alert("Erro de permissão no banco: " + error.message); }
         });
 
         // Evento: Cadastrar Funcionário
@@ -431,7 +423,7 @@
             try {
                 await addDoc(collection(db, "employees"), { name, registration, role });
                 document.getElementById('form-add-employee').reset();
-            } catch (error) { alert("Erro: " + error.message); }
+            } catch (error) { alert("Erro de permissão no banco: " + error.message); }
         });
 
         // Confirmação de checklist concluído
@@ -439,7 +431,7 @@
             const id = document.getElementById('modal-task-id').value;
             const userSelectValue = modalUserSelect.value;
             
-            if(!userSelectValue) {
+            if(!userSelectValue || userSelectValue.includes("CADASTRAR EQUIPE")) {
                 alert("É necessário selecionar um funcionário operacional cadastrado!");
                 return;
             }
@@ -458,7 +450,7 @@
                     user: userSelectValue, timestamp: serverTimestamp()
                 });
                 closeAuthModal();
-            } catch (error) { alert("Erro: " + error.message); }
+            } catch (error) { alert("Erro ao salvar verificação: " + error.message); }
         }
 
         window.deleteTask = async function(id, collectionName) {
@@ -470,7 +462,6 @@
         window.openAuthModal = function(id) {
             document.getElementById('modal-task-id').value = id;
             
-            // Pré-seleciona inteligentemente o último funcionário que usou o aparelho
             const savedIdx = localStorage.getItem('checklist_operator_select_idx');
             if(savedIdx && modalUserSelect.options[savedIdx]) {
                 modalUserSelect.selectedIndex = savedIdx;
