@@ -2,204 +2,209 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checklist Operacional de Sistemas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Checklist Operacional • Sistema Integrado</title>
+    <!-- Tailwind + Font Awesome + Google Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <style>
-        .tab-active { border-bottom-width: 3px; border-color: #2563eb; color: #2563eb; font-weight: 700; }
-        .custom-scroll::-webkit-scrollbar { height: 4px; width: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+        * { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+        .tab-active { 
+            border-bottom-width: 2.5px; 
+            border-color: #2563eb; 
+            color: #1e40af; 
+            font-weight: 700;
+            background: linear-gradient(transparent 80%, #eff6ff 20%);
+        }
+        .custom-scroll::-webkit-scrollbar { height: 5px; width: 5px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+        .card-hover { transition: all 0.2s ease; }
+        .card-hover:active { transform: scale(0.99); }
+        .glass-effect { background: rgba(255,255,255,0.7); backdrop-filter: blur(2px); }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeSlideUp 0.25s ease-out forwards; }
+        .btn-press:active { transform: scale(0.96); transition: 0.05s; }
+        .shadow-soft { box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.02); }
+        .bg-grid { background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 24px 24px; }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-800 min-h-screen flex flex-col">
+<body class="bg-slate-50 font-sans text-slate-800 min-h-screen flex flex-col bg-grid">
 
-    <header class="bg-blue-700 text-white shadow-md p-4 sticky top-0 z-20">
-        <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-            <h1 class="text-lg sm:text-xl font-bold flex items-center gap-2">
-                <span>📋</span> Checklist de Sistemas
-            </h1>
-            <div id="connection-status" class="text-xs bg-green-600 px-3 py-1 rounded-full animate-pulse font-medium">
-                Sincronizado Online
+    <!-- Topbar refinado -->
+    <header class="bg-gradient-to-r from-blue-800 to-blue-700 text-white shadow-lg sticky top-0 z-20 border-b border-blue-600/30">
+        <div class="container mx-auto px-4 py-3.5 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="h-8 w-8 bg-white/20 rounded-xl backdrop-blur-sm flex items-center justify-center">
+                    <i class="fas fa-clipboard-list text-white text-sm"></i>
+                </div>
+                <h1 class="text-base sm:text-xl font-extrabold tracking-tight">Checklist <span class="font-light">Operacional</span></h1>
+            </div>
+            <div id="connection-status" class="text-[10px] sm:text-xs bg-emerald-500/90 backdrop-blur-sm px-3 py-1.5 rounded-full font-semibold flex items-center gap-1 shadow-sm">
+                <i class="fas fa-cloud-upload-alt text-[9px]"></i> <span>Sincronizado</span>
             </div>
         </div>
     </header>
 
-    <nav class="bg-white border-b border-slate-200 sticky top-[60px] sm:top-[64px] z-20 shadow-sm overflow-x-auto custom-scroll">
-        <div class="container mx-auto flex min-w-[480px] sm:min-w-0 justify-around">
-            <button onclick="switchTab('checklists-tab')" id="btn-checklists-tab" class="flex-1 py-3 px-2 text-center text-xs sm:text-sm text-slate-600 hover:text-blue-600 font-medium transition tab-active">
-                🔄 Checklists
+    <!-- Navegação melhorada e responsiva -->
+    <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-[57px] sm:top-[70px] z-20 shadow-sm">
+        <div class="container mx-auto grid grid-cols-4 text-center">
+            <button onclick="switchTab('checklists-tab')" id="btn-checklists-tab" class="py-3.5 text-slate-600 hover:text-blue-700 text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-1.5 tab-active">
+                <i class="fas fa-arrows-rotate text-[11px] sm:text-xs"></i><span>Rotinas</span>
             </button>
-            <button onclick="switchTab('dashboard-tab')" id="btn-dashboard-tab" class="flex-1 py-3 px-2 text-center text-xs sm:text-sm text-slate-600 hover:text-blue-600 font-medium transition">
-                📊 Dashboard
+            <button onclick="switchTab('dashboard-tab')" id="btn-dashboard-tab" class="py-3.5 text-slate-600 hover:text-blue-700 text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-1.5">
+                <i class="fas fa-chart-pie text-[11px] sm:text-xs"></i><span>Painel</span>
             </button>
-            <button onclick="switchTab('history-tab')" id="btn-history-tab" class="flex-1 py-3 px-2 text-center text-xs sm:text-sm text-slate-600 hover:text-blue-600 font-medium transition">
-                📜 Histórico
+            <button onclick="switchTab('history-tab')" id="btn-history-tab" class="py-3.5 text-slate-600 hover:text-blue-700 text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-1.5">
+                <i class="fas fa-history text-[11px] sm:text-xs"></i><span>Logs</span>
             </button>
-            <button onclick="switchTab('admin-tab')" id="btn-admin-tab" class="flex-1 py-3 px-2 text-center text-xs sm:text-sm text-slate-600 hover:text-blue-600 font-medium transition">
-                ⚙️ Configurações
+            <button onclick="switchTab('admin-tab')" id="btn-admin-tab" class="py-3.5 text-slate-600 hover:text-blue-700 text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-1.5">
+                <i class="fas fa-sliders-h text-[11px] sm:text-xs"></i><span>Configs</span>
             </button>
         </div>
     </nav>
 
-    <main class="container mx-auto p-3 sm:p-6 max-w-5xl flex-grow">
+    <main class="container mx-auto p-4 sm:p-6 max-w-6xl flex-grow">
 
-        <section id="checklists-tab" class="tab-content">
-            <div class="grid grid-cols-4 gap-1.5 sm:flex sm:justify-center sm:gap-2 mb-5">
-                <button onclick="filterPeriod('todos')" id="btn-p-todos" class="py-2.5 sm:px-5 bg-blue-600 text-white text-xs sm:text-sm rounded-xl font-semibold shadow">Todos</button>
-                <button onclick="filterPeriod('Manhã')" id="btn-p-manha" class="py-2.5 sm:px-5 bg-white text-slate-700 text-xs sm:text-sm rounded-xl font-semibold border border-slate-200 hover:bg-slate-50">🌅 Manhã</button>
-                <button onclick="filterPeriod('Tarde')" id="btn-p-tarde" class="py-2.5 sm:px-5 bg-white text-slate-700 text-xs sm:text-sm rounded-xl font-semibold border border-slate-200 hover:bg-slate-50">☀️ Tarde</button>
-                <button onclick="filterPeriod('Noite')" id="btn-p-noite" class="py-2.5 sm:px-5 bg-white text-slate-700 text-xs sm:text-sm rounded-xl font-semibold border border-slate-200 hover:bg-slate-50">🌙 Noite</button>
+        <!-- AB ROTINAS -->
+        <section id="checklists-tab" class="tab-content animate-fade-in">
+            <div class="flex flex-wrap justify-center gap-1.5 sm:gap-3 mb-6">
+                <button onclick="filterPeriod('todos')" id="btn-p-todos" class="px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all flex items-center gap-2 bg-blue-600 text-white border-none"><i class="fas fa-layer-group text-xs"></i> Todos</button>
+                <button onclick="filterPeriod('Manhã')" id="btn-p-manha" class="px-4 py-2.5 rounded-xl text-sm font-semibold shadow-sm transition-all bg-white text-amber-700 border border-amber-200 hover:bg-amber-50"><i class="fas fa-sun"></i> Manhã</button>
+                <button onclick="filterPeriod('Tarde')" id="btn-p-tarde" class="px-4 py-2.5 rounded-xl text-sm font-semibold shadow-sm transition-all bg-white text-orange-700 border border-orange-200 hover:bg-orange-50"><i class="fas fa-cloud-sun"></i> Tarde</button>
+                <button onclick="filterPeriod('Noite')" id="btn-p-noite" class="px-4 py-2.5 rounded-xl text-sm font-semibold shadow-sm transition-all bg-white text-purple-700 border border-purple-200 hover:bg-purple-50"><i class="fas fa-moon"></i> Noite</button>
             </div>
+            <div id="systems-container" class="space-y-5"></div>
+        </section>
 
-            <div id="systems-container" class="space-y-4">
-                <div class="text-center text-slate-400 py-8">Carregando tarefas em tempo real...</div>
+        <!-- DASHBOARD ANIMADO -->
+        <section id="dashboard-tab" class="tab-content hidden animate-fade-in">
+            <div class="grid grid-cols-3 gap-3 sm:gap-5 mb-6">
+                <div class="bg-white rounded-2xl shadow-xl border-0 p-4 text-center transition-all hover:scale-[1.02]">
+                    <i class="fas fa-tasks text-slate-400 text-xl mb-1"></i>
+                    <h3 class="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Total Rotinas</h3>
+                    <p id="dash-total" class="text-2xl sm:text-4xl font-black text-slate-800 mt-1">0</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-xl border-0 p-4 text-center transition-all hover:scale-[1.02]">
+                    <i class="fas fa-check-circle text-emerald-500 text-xl mb-1"></i>
+                    <h3 class="text-[11px] text-emerald-600 font-bold uppercase tracking-wider">Concluídas</h3>
+                    <p id="dash-done" class="text-2xl sm:text-4xl font-black text-emerald-600 mt-1">0</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-xl border-0 p-4 text-center transition-all hover:scale-[1.02]">
+                    <i class="fas fa-hourglass-half text-amber-500 text-xl mb-1"></i>
+                    <h3 class="text-[11px] text-amber-600 font-bold uppercase tracking-wider">Pendentes</h3>
+                    <p id="dash-pending" class="text-2xl sm:text-4xl font-black text-amber-500 mt-1">0</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-xl p-5 border-0">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="text-sm font-extrabold text-slate-700"><i class="fas fa-chart-line text-blue-500 mr-2"></i>Eficiência Operacional</h3>
+                    <span id="dash-progress-text" class="text-xs font-bold text-slate-400">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-4 overflow-hidden shadow-inner">
+                    <div id="dash-progress-bar" class="bg-gradient-to-r from-emerald-500 to-green-600 h-4 rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
+                </div>
+                <p class="text-right text-[10px] text-slate-400 mt-2 font-medium"><i class="far fa-calendar-alt"></i> Atualização em tempo real</p>
             </div>
         </section>
 
-        <section id="dashboard-tab" class="tab-content hidden">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-center">
-                    <h3 class="text-xs text-slate-500 font-bold uppercase tracking-wider">Total do Dia</h3>
-                    <p id="dash-total" class="text-3xl sm:text-4xl font-black text-slate-800 mt-1">0</p>
-                </div>
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-center">
-                    <h3 class="text-xs text-green-600 font-bold uppercase tracking-wider">Verificados / OK</h3>
-                    <p id="dash-done" class="text-3xl sm:text-4xl font-black text-green-600 mt-1">0</p>
-                </div>
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 text-center">
-                    <h3 class="text-xs text-orange-500 font-bold uppercase tracking-wider">Restantes</h3>
-                    <p id="dash-pending" class="text-3xl sm:text-4xl font-black text-orange-500 mt-1">0</p>
-                </div>
-            </div>
-
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-                <h3 class="text-base font-bold text-slate-700 mb-3">Progresso Geral das Rotinas</h3>
-                <div class="w-full bg-slate-100 rounded-full h-4 mb-2 overflow-hidden">
-                    <div id="dash-progress-bar" class="bg-green-500 h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
-                </div>
-                <p id="dash-progress-text" class="text-xs font-bold text-slate-500 text-right">0% Concluído</p>
-            </div>
-        </section>
-
-        <section id="history-tab" class="tab-content hidden">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                <div class="p-4 border-b border-slate-100 bg-slate-50">
-                    <h3 class="font-bold text-sm text-slate-700">Logs de Verificação Recentes</h3>
+        <!-- HISTÓRICO COM DESIGN DE TABELA MODERNO -->
+        <section id="history-tab" class="tab-content hidden animate-fade-in">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="p-4 bg-gradient-to-r from-slate-50 to-white border-b border-slate-100 flex items-center gap-2">
+                    <i class="fas fa-scroll text-indigo-500 text-sm"></i>
+                    <h3 class="font-bold text-sm text-slate-700">Últimas validações</h3>
                 </div>
                 <div class="overflow-x-auto custom-scroll">
-                    <table class="min-w-full divide-y divide-slate-200 text-left text-xs sm:text-sm">
-                        <thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-bold tracking-wider">
-                            <tr>
-                                <th class="px-4 py-3 whitespace-nowrap">Horário</th>
-                                <th class="px-4 py-3 whitespace-nowrap">Sistema</th>
-                                <th class="px-4 py-3">Verificação Feita</th>
-                                <th class="px-4 py-3 whitespace-nowrap">Quem Fez</th>
-                            </tr>
+                    <table class="min-w-full divide-y divide-slate-100">
+                        <thead class="bg-slate-50/80 text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+                            <tr><th class="px-4 py-3">Hora</th><th class="px-4 py-3">Sistema</th><th class="px-4 py-3">Verificação</th><th class="px-4 py-3">Operador</th></tr>
                         </thead>
-                        <tbody id="history-table-body" class="divide-y divide-slate-100 text-slate-600">
-                            <tr>
-                                <td colspan="4" class="px-4 py-6 text-center text-slate-400">Nenhum registro encontrado hoje.</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="history-table-body" class="divide-y divide-slate-100 text-slate-700 text-xs"></tbody>
                     </table>
                 </div>
             </div>
         </section>
 
-        <section id="admin-tab" class="tab-content hidden">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="text-base font-bold mb-4 text-blue-700 border-b border-slate-100 pb-2">➕ Cadastrar Nova Rotina</h3>
-                    <form id="form-add-task" class="space-y-4">
-                        <div>
-                            <label class="block text-[11px] font-bold mb-1 uppercase text-slate-400 tracking-wider">Nome do Sistema</label>
-                            <input type="text" id="input-system" placeholder="Ex: SGPD, SRO" required class="w-full border border-slate-200 p-2.5 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold mb-1 uppercase text-slate-400 tracking-wider">O que verificar?</label>
-                            <input type="text" id="input-task" placeholder="Ex: Saídas de funcionários" required class="w-full border border-slate-200 p-2.5 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold mb-1 uppercase text-slate-400 tracking-wider">Período</label>
-                            <select id="select-period" class="w-full border border-slate-200 p-2.5 rounded-xl bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm">
-                                <option value="Manhã">🌅 Manhã</option>
-                                <option value="Tarde">☀️ Tarde</option>
-                                <option value="Noite">🌙 Noite</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-3 rounded-xl hover:bg-blue-700 shadow transition text-sm">Salvar Rotina</button>
+        <!-- ÁREA DE CONFIGURAÇÃO COM CARDS MODERNOS -->
+        <section id="admin-tab" class="tab-content hidden animate-fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- Card Nova Rotina -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden border-0 transition-all hover:shadow-2xl">
+                    <div class="bg-blue-50 px-5 py-3 border-b border-blue-100 flex items-center gap-2">
+                        <i class="fas fa-plus-circle text-blue-600 text-base"></i>
+                        <h3 class="text-sm font-black text-blue-800">➕ Cadastrar nova rotina</h3>
+                    </div>
+                    <form id="form-add-task" class="p-5 space-y-4">
+                        <div><label class="block text-[10px] font-black text-slate-500 uppercase mb-1"><i class="far fa-server mr-1"></i>Sistema</label><input type="text" id="input-system" placeholder="Ex: SRO, SGPD, LOGÍSTICA" required class="w-full border border-slate-200 p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-300 transition"></div>
+                        <div><label class="block text-[10px] font-black text-slate-500 uppercase mb-1"><i class="far fa-question-circle mr-1"></i>Item de verificação</label><input type="text" id="input-task" placeholder="Ex: Backup validado, Fechamento de carga" required class="w-full border border-slate-200 p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-blue-300"></div>
+                        <div><label class="block text-[10px] font-black text-slate-500 uppercase mb-1"><i class="far fa-clock mr-1"></i>Período</label><select id="select-period" class="w-full border border-slate-200 p-3 rounded-xl text-sm bg-white"><option value="Manhã">🌅 Manhã (06h-12h)</option><option value="Tarde">☀️ Tarde (12h-18h)</option><option value="Noite">🌙 Noite (18h-00h)</option></select></div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition-all btn-press"><i class="fas fa-save mr-1"></i> Salvar rotina</button>
                     </form>
                 </div>
-
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="text-base font-bold mb-4 text-slate-700 border-b border-slate-100 pb-2">📋 Rotinas Ativas</h3>
-                    <div id="admin-tasks-list" class="space-y-2 max-h-72 overflow-y-auto pr-1 custom-scroll"></div>
+                <!-- Card Lista Rotinas -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                    <div class="bg-slate-50 px-5 py-3 border-b border-slate-200 flex items-center gap-2">
+                        <i class="fas fa-list-ul text-slate-600 text-base"></i>
+                        <h3 class="text-sm font-black text-slate-700">📋 Rotinas ativas</h3>
+                    </div>
+                    <div id="admin-tasks-list" class="p-4 space-y-2 max-h-72 overflow-y-auto custom-scroll"></div>
                 </div>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="text-base font-bold mb-4 text-emerald-700 border-b border-slate-100 pb-2">👤 Cadastrar Funcionário / Operador</h3>
-                    <form id="form-add-employee" class="space-y-4">
-                        <div>
-                            <label class="block text-[11px] font-bold mb-1 uppercase text-slate-400 tracking-wider">Nome Completo</label>
-                            <input type="text" id="input-emp-name" placeholder="Ex: João Silva" required class="w-full border border-slate-200 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold mb-1 uppercase text-slate-400 tracking-wider">Matrícula</label>
-                            <input type="text" id="input-emp-reg" placeholder="Ex: 8123456" required class="w-full border border-slate-200 p-2.5 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm uppercase">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold mb-1 uppercase text-slate-400 tracking-wider">Função / Setor</label>
-                            <select id="select-emp-role" class="w-full border border-slate-200 p-2.5 rounded-xl bg-white focus:ring-2 focus:ring-emerald-500 outline-none text-sm">
-                                <option value="Interno">🏢 Interno</option>
-                                <option value="Motorista">🚗 Motorista</option>
-                                <option value="Motociclista">🏍️ Motociclista</option>
-                                <option value="Ciclista">🚲 Ciclista</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="w-full bg-emerald-600 text-white font-semibold py-3 rounded-xl hover:bg-emerald-700 shadow transition text-sm">Cadastrar Integrante</button>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Card Novo Integrante -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                    <div class="bg-emerald-50 px-5 py-3 border-b border-emerald-100 flex items-center gap-2">
+                        <i class="fas fa-user-plus text-emerald-600 text-base"></i>
+                        <h3 class="text-sm font-black text-emerald-800">👤 Registrar operador</h3>
+                    </div>
+                    <form id="form-add-employee" class="p-5 space-y-4">
+                        <div><label class="block text-[10px] font-black text-slate-500 uppercase mb-1">Nome completo</label><input type="text" id="input-emp-name" placeholder="Ex: Ana Carolina Mendes" required class="w-full border border-slate-200 p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-emerald-300"></div>
+                        <div><label class="block text-[10px] font-black text-slate-500 uppercase mb-1">Matrícula / ID</label><input type="text" id="input-emp-reg" placeholder="Ex: 8012345" required class="w-full border border-slate-200 p-3 rounded-xl text-sm outline-none uppercase"></div>
+                        <div><label class="block text-[10px] font-black text-slate-500 uppercase mb-1">Função / Equipe</label><select id="select-emp-role" class="w-full border border-slate-200 p-3 rounded-xl text-sm bg-white"><option value="Interno">🏢 Interno (Logística)</option><option value="Motorista">🚛 Motorista</option><option value="Motociclista">🏍️ Motociclista</option><option value="Ciclista">🚲 Ciclista</option></select></div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-bold py-3 rounded-xl shadow-md hover:shadow-lg transition-all btn-press"><i class="fas fa-id-card mr-1"></i> Cadastrar integrante</button>
                     </form>
                 </div>
-
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="text-base font-bold mb-4 text-slate-700 border-b border-slate-100 pb-2">👥 Equipe Cadastrada</h3>
-                    <div id="admin-employees-list" class="space-y-2 max-h-72 overflow-y-auto pr-1 custom-scroll"></div>
+                <!-- Card Equipe Cadastrada -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                    <div class="bg-slate-50 px-5 py-3 border-b border-slate-200 flex items-center gap-2">
+                        <i class="fas fa-users text-slate-600 text-base"></i>
+                        <h3 class="text-sm font-black text-slate-700">👥 Equipe operacional</h3>
+                    </div>
+                    <div id="admin-employees-list" class="p-4 space-y-2 max-h-72 overflow-y-auto custom-scroll"></div>
                 </div>
             </div>
         </section>
-
     </main>
 
-    <div id="auth-modal" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-2xl shadow-xl p-5 w-full max-w-sm border border-slate-100">
-            <h3 class="text-base font-bold mb-1 flex items-center gap-2 text-slate-800">
-                <span>🔑</span> Confirmar Verificação
-            </h3>
-            <p class="text-xs text-slate-400 mb-4">Selecione seu nome da lista operacional para registrar o OK.</p>
-            
-            <input type="hidden" id="modal-task-id">
-            
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 tracking-wider">Quem está operando?</label>
-                    <select id="modal-user-select" class="w-full border border-slate-200 p-3 rounded-xl font-semibold text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none">
-                        </select>
-                </div>
+    <!-- MODAL CONFIRMAÇÃO MODERNO -->
+    <div id="auth-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50 transition-all duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md border-0 transform transition-all scale-95 animate-fade-in">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center"><i class="fas fa-user-check text-blue-600 text-lg"></i></div>
+                <h3 class="text-lg font-extrabold text-slate-800">Validar tarefa</h3>
             </div>
-            
-            <div class="flex gap-2.5 mt-5">
-                <button onclick="closeAuthModal()" class="w-1/2 bg-slate-100 text-slate-600 py-3 rounded-xl hover:bg-slate-200 font-bold text-xs transition">Cancelar</button>
-                <button onclick="confirmTaskCheck()" class="w-1/2 bg-green-600 text-white py-3 rounded-xl hover:bg-green-700 font-bold text-xs shadow transition active:scale-[0.98]">Confirmar OK</button>
+            <p class="text-sm text-slate-500 mb-5 border-l-3 border-blue-400 pl-3">Selecione o operador responsável pela conferência</p>
+            <input type="hidden" id="modal-task-id">
+            <div class="mb-4">
+                <label class="block text-[11px] font-black uppercase text-slate-400 mb-2 tracking-wide"><i class="fas fa-id-badge"></i> Operador ativo</label>
+                <select id="modal-user-select" class="w-full border border-slate-200 p-3.5 rounded-xl font-medium text-sm bg-slate-50 focus:ring-2 focus:ring-blue-400 outline-none"></select>
+            </div>
+            <div class="flex gap-3 mt-2">
+                <button onclick="closeAuthModal()" class="flex-1 bg-slate-100 text-slate-700 py-3 rounded-xl font-semibold hover:bg-slate-200 transition-all"><i class="fas fa-times mr-1"></i> Cancelar</button>
+                <button onclick="confirmTaskCheck()" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-bold shadow-md hover:bg-emerald-700 transition-all btn-press"><i class="fas fa-check-double"></i> Confirmar OK</button>
             </div>
         </div>
     </div>
 
+    <!-- FIREBASE V10 MODULE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { 
-            getFirestore, collection, addDoc, onSnapshot, query, doc, updateDoc, serverTimestamp, orderBy, limit, deleteDoc
-        } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, doc, updateDoc, serverTimestamp, orderBy, limit, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCjtfkxyJPZffs0IE_gIWHPEZKMBwZI7u0",
@@ -209,300 +214,73 @@
             messagingSenderId: "286537825396",
             appId: "1:286537825396:web:6d237139ece9b70cdd6521"
         };
-
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let allTasks = [];
-        let allEmployees = [];
-        let currentPeriodFilter = 'todos';
-        let todayStr = new Date().toISOString().split('T')[0];
-
+        let allTasks = [], allEmployees = [], currentPeriodFilter = 'todos';
+        const todayStr = new Date().toISOString().split('T')[0];
         const container = document.getElementById('systems-container');
         const adminTasksList = document.getElementById('admin-tasks-list');
         const adminEmployeesList = document.getElementById('admin-employees-list');
         const modalUserSelect = document.getElementById('modal-user-select');
 
-        // Escuta coleção de tarefas
-        onSnapshot(query(collection(db, "tasks"), orderBy("system")), (snapshot) => {
-            allTasks = [];
-            snapshot.forEach(doc => { allTasks.push({ id: doc.id, ...doc.data() }); });
-            renderChecklists();
-            renderAdminTaskList();
-            updateDashboard();
-        }, (error) => { console.error("Erro ao ler tarefas: ", error); });
-
-        // Escuta coleção de funcionários cadastrados
-        onSnapshot(query(collection(db, "employees"), orderBy("name")), (snapshot) => {
-            allEmployees = [];
-            snapshot.forEach(doc => { allEmployees.push({ id: doc.id, ...doc.data() }); });
-            renderAdminEmployeeList();
-            populateModalSelect();
-        }, (error) => { console.error("Erro ao ler funcionários: ", error); });
-
-        // Escuta histórico de Logs
-        const historyQuery = query(collection(db, "history"), orderBy("timestamp", "desc"), limit(25));
-        onSnapshot(historyQuery, (snapshot) => {
+        onSnapshot(query(collection(db, "tasks")), (snap) => { allTasks = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderChecklists(); renderAdminTaskList(); updateDashboard(); });
+        onSnapshot(query(collection(db, "employees")), (snap) => { allEmployees = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderAdminEmployeeList(); populateModalSelect(); });
+        onSnapshot(query(collection(db, "history"), orderBy("timestamp", "desc"), limit(35)), (snap) => {
             const tbody = document.getElementById('history-table-body');
             tbody.innerHTML = '';
-            if(snapshot.empty) {
-                tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-6 text-center text-slate-400">Nenhum registro encontrado hoje.</td></tr>`;
-                return;
-            }
-            snapshot.forEach(doc => {
-                const log = doc.data();
-                const dateObj = log.timestamp?.toDate() ? log.timestamp.toDate() : new Date();
-                const timeStr = dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-                
-                const row = document.createElement('tr');
-                row.className = "hover:bg-slate-50/80 transition";
-                row.innerHTML = `
-                    <td class="px-4 py-3 whitespace-nowrap text-slate-400 font-mono text-[11px]">${timeStr}</td>
-                    <td class="px-4 py-3 whitespace-nowrap font-bold text-slate-700">${log.system}</td>
-                    <td class="px-4 py-3 text-slate-600 min-w-[150px]">${log.description}</td>
-                    <td class="px-4 py-3 whitespace-nowrap font-semibold text-blue-600">${log.user}</td>
-                `;
-                tbody.appendChild(row);
+            if(snap.empty) { tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-8 text-center text-slate-400"><i class="fas fa-inbox mr-1"></i> Nenhum registro hoje</td></tr>`; return; }
+            snap.forEach(doc => {
+                const log = doc.data(), date = log.timestamp?.toDate() || new Date();
+                const time = date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second:'2-digit' });
+                const row = `<tr class="hover:bg-slate-50"><td class="px-4 py-2.5 font-mono text-[10px] font-semibold text-slate-400">${time}</td><td class="px-4 py-2.5 font-bold text-slate-700">${log.system || '—'}</td><td class="px-4 py-2.5 text-slate-600 max-w-[180px] truncate">${log.description || ''}</td><td class="px-4 py-2.5"><span class="bg-blue-50 text-blue-700 px-2 py-1 rounded-full text-[9px] font-bold">${log.user || 'Sistema'}</span></td></tr>`;
+                tbody.insertAdjacentHTML('beforeend', row);
             });
         });
 
         function renderChecklists() {
             container.innerHTML = '';
-            const filtered = currentPeriodFilter === 'todos' ? allTasks : allTasks.filter(t => t.period === currentPeriodFilter);
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center text-slate-400 py-10 bg-white rounded-2xl border border-slate-100 text-sm">Nenhuma verificação pendente neste período.</div>`;
-                return;
-            }
-
-            const grouped = filtered.reduce((acc, current) => {
-                (acc[current.system] = acc[current.system] || []).push(current);
-                return acc;
-            }, {});
-
-            for (const systemName in grouped) {
+            let filtered = currentPeriodFilter === 'todos' ? allTasks : allTasks.filter(t => t.period === currentPeriodFilter);
+            if(!filtered.length) { container.innerHTML = `<div class="bg-white rounded-2xl p-8 text-center shadow-sm border"><i class="fas fa-check-circle text-slate-300 text-3xl mb-2"></i><p class="text-slate-400 text-sm">Nenhuma rotina para o período selecionado</p></div>`; return; }
+            const grouped = filtered.reduce((acc, t) => ((acc[t.system] = acc[t.system] || []).push(t), acc), {});
+            for(let [system, tasks] of Object.entries(grouped)) {
                 const card = document.createElement('div');
-                card.className = "bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-4";
-                
-                let headerHTML = `
-                    <div class="bg-slate-50/80 px-4 py-3 border-b border-slate-100">
-                        <h2 class="font-black text-slate-700 text-xs sm:text-sm tracking-wider uppercase">🖥️ ${systemName}</h2>
-                    </div>
-                    <div class="divide-y divide-slate-100">
-                `;
-
-                grouped[systemName].forEach(task => {
-                    const isDoneToday = task.lastCheckedDate === todayStr;
-                    headerHTML += `
-                        <div class="p-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 hover:bg-slate-50/30 transition">
-                            <div class="flex-1">
-                                <div class="flex items-center gap-1.5 flex-wrap">
-                                    <span class="text-[9px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-md ${getPeriodColor(task.period)}">${task.period}</span>
-                                    <p class="text-xs sm:text-sm font-semibold ${isDoneToday ? 'line-through text-slate-300' : 'text-slate-700'}">${task.description}</p>
-                                </div>
-                                ${isDoneToday ? `<p class="text-[11px] text-green-600 font-bold mt-1">✓ Concluído por ${task.checkedBy} às ${task.checkedTime}</p>` : ''}
-                            </div>
-                            <div class="flex items-center">
-                                <button 
-                                    onclick="openAuthModal('${task.id}')"
-                                    ${isDoneToday ? 'disabled' : ''} 
-                                    class="w-full sm:w-auto px-4 py-2 sm:py-1.5 rounded-xl text-xs font-bold tracking-wider border transition 
-                                    ${isDoneToday ? 'bg-green-50 text-green-600 border-green-100 cursor-not-allowed' : 'bg-white text-blue-600 border-blue-200 hover:bg-blue-50 active:bg-blue-100 shadow-sm'}"
-                                >
-                                    ${isDoneToday ? 'CONCLUÍDO' : 'MARCAR OK'}
-                                </button>
-                            </div>
-                        </div>
-                    `;
+                card.className = "bg-white rounded-2xl shadow-lg overflow-hidden border border-slate-100 transition-all hover:shadow-xl";
+                let html = `<div class="bg-gradient-to-r from-slate-100 to-white px-5 py-3 border-b border-slate-200 flex items-center gap-2"><i class="fas fa-desktop text-blue-500 text-sm"></i><h2 class="font-black text-slate-800 text-sm tracking-wide">${system}</h2><span class="ml-auto text-[9px] bg-slate-200 px-2 py-0.5 rounded-full font-bold">${tasks.length} itens</span></div><div class="divide-y divide-slate-100">`;
+                tasks.forEach(task => {
+                    const done = task.lastCheckedDate === todayStr;
+                    html += `<div class="p-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 transition hover:bg-slate-50/50">
+                        <div class="flex-1"><div class="flex items-center gap-2 flex-wrap"><span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-lg ${task.period === 'Manhã' ? 'bg-amber-100 text-amber-800' : task.period === 'Tarde' ? 'bg-orange-100 text-orange-800' : 'bg-purple-100 text-purple-800'}">${task.period === 'Manhã' ? '🌅' : task.period === 'Tarde' ? '☀️' : '🌙'} ${task.period}</span><p class="text-sm font-semibold ${done ? 'line-through text-slate-300' : 'text-slate-800'}">${task.description}</p></div>${done ? `<p class="text-[11px] text-emerald-700 font-bold mt-1.5 flex items-center gap-1"><i class="fas fa-user-check text-[9px]"></i> Verificado por ${task.checkedBy} às ${task.checkedTime}</p>` : ''}</div>
+                        <div><button onclick="openAuthModal('${task.id}')" ${done ? 'disabled' : ''} class="w-full sm:w-auto px-5 py-2 rounded-xl text-xs font-extrabold transition-all shadow-sm ${done ? 'bg-emerald-100 text-emerald-700 border-0 cursor-not-allowed' : 'bg-white border border-blue-300 text-blue-700 hover:bg-blue-50 active:scale-95'}">${done ? '<i class="fas fa-check-circle mr-1"></i> CONCLUÍDO' : '<i class="fas fa-thumbs-up mr-1"></i> MARCAR OK'}</button></div>
+                    </div>`;
                 });
-
-                headerHTML += `</div>`;
-                card.innerHTML = headerHTML;
+                html += `</div>`;
+                card.innerHTML = html;
                 container.appendChild(card);
             }
         }
 
         function renderAdminTaskList() {
-            adminTasksList.innerHTML = '';
-            if(allTasks.length === 0) {
-                adminTasksList.innerHTML = '<p class="text-xs text-slate-400">Nenhuma rotina cadastrada.</p>';
-                return;
-            }
-            allTasks.forEach(task => {
-                const item = document.createElement('div');
-                item.className = "flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs";
-                item.innerHTML = `
-                    <div class="truncate mr-2">
-                        <span class="font-bold text-slate-600">[${task.system}]</span> <span class="text-slate-400 font-medium">(${task.period})</span>
-                        <p class="text-slate-500 truncate mt-0.5">${task.description}</p>
-                    </div>
-                    <button onclick="deleteTask('${task.id}', 'tasks')" class="text-red-500 hover:text-red-700 font-bold px-2 py-1">Excluir</button>
-                `;
-                adminTasksList.appendChild(item);
-            });
+            if(!allTasks.length) { adminTasksList.innerHTML = '<div class="text-center text-slate-400 py-6 text-sm"><i class="far fa-smile-wink"></i> Nenhuma rotina cadastrada</div>'; return; }
+            adminTasksList.innerHTML = allTasks.map(t => `<div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100 shadow-sm"><div><span class="font-extrabold text-slate-700 text-xs bg-slate-200 px-2 py-0.5 rounded">${t.system}</span><span class="text-[10px] text-slate-400 ml-2">${t.period}</span><p class="text-slate-600 text-xs mt-1">${t.description}</p></div><button onclick="deleteTask('${t.id}', 'tasks')" class="text-red-500 hover:text-red-800 font-bold text-xs bg-white px-2 py-1 rounded-lg transition"><i class="far fa-trash-alt"></i></button></div>`).join('');
         }
 
         function renderAdminEmployeeList() {
-            adminEmployeesList.innerHTML = '';
-            if(allEmployees.length === 0) {
-                adminEmployeesList.innerHTML = '<p class="text-xs text-slate-400">Nenhum funcionário cadastrado.</p>';
-                return;
-            }
-            allEmployees.forEach(emp => {
-                const item = document.createElement('div');
-                item.className = "flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs";
-                item.innerHTML = `
-                    <div class="truncate mr-2">
-                        <span class="font-bold text-slate-700">${emp.name}</span> <span class="text-slate-400">(${emp.registration})</span>
-                        <p class="text-slate-500 font-medium mt-0.5">Função: ${emp.role}</p>
-                    </div>
-                    <button onclick="deleteTask('${emp.id}', 'employees')" class="text-red-500 hover:text-red-700 font-bold px-2 py-1">Remover</button>
-                `;
-                adminEmployeesList.appendChild(item);
-            });
+            if(!allEmployees.length) { adminEmployeesList.innerHTML = '<div class="text-center text-slate-400 py-6 text-sm"><i class="fas fa-users-slash"></i> Nenhum operador cadastrado</div>'; return; }
+            adminEmployeesList.innerHTML = allEmployees.map(e => `<div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border border-slate-100"><div><span class="font-bold text-slate-800 text-sm">${e.name}</span><div class="flex gap-2 text-[10px] mt-0.5"><span class="text-slate-500"><i class="fas fa-qrcode"></i> ${e.registration}</span><span class="bg-emerald-100 text-emerald-700 px-1.5 rounded-full">${e.role}</span></div></div><button onclick="deleteTask('${e.id}', 'employees')" class="text-rose-500 hover:text-rose-800 text-xs font-bold bg-white px-2 py-1 rounded-lg"><i class="fas fa-user-minus"></i></button></div>`).join('');
         }
 
-        function populateModalSelect() {
-            modalUserSelect.innerHTML = '';
-            if(allEmployees.length === 0) {
-                modalUserSelect.innerHTML = '<option value="">CADASTRAR EQUIPE EM CONFIGURAÇÕES</option>';
-                return;
-            }
-            allEmployees.forEach(emp => {
-                const opt = document.createElement('option');
-                opt.value = `${emp.name} [MATRÍCULA: ${emp.registration}]`;
-                opt.innerText = `${emp.name} (${emp.registration}) - ${emp.role}`;
-                modalUserSelect.appendChild(opt);
-            });
-        }
+        function populateModalSelect() { modalUserSelect.innerHTML = !allEmployees.length ? '<option>⚠️ Cadastre operadores na aba Configs</option>' : allEmployees.map(e => `<option value="${e.name} [MATRÍCULA: ${e.registration}]">${e.name} (${e.registration}) - ${e.role}</option>`).join(''); }
+        function updateDashboard() { const total = allTasks.length, done = allTasks.filter(t => t.lastCheckedDate === todayStr).length, pct = total ? Math.round((done/total)*100) : 0; document.getElementById('dash-total').innerText = total; document.getElementById('dash-done').innerText = done; document.getElementById('dash-pending').innerText = total-done; document.getElementById('dash-progress-bar').style.width = `${pct}%`; document.getElementById('dash-progress-text').innerText = `${pct}% Concluído`; }
 
-        function updateDashboard() {
-            const total = allTasks.length;
-            const done = allTasks.filter(t => t.lastCheckedDate === todayStr).length;
-            const pending = total - done;
-            const pct = total > 0 ? Math.round((done / total) * 100) : 0;
-
-            document.getElementById('dash-total').innerText = total;
-            document.getElementById('dash-done').innerText = done;
-            document.getElementById('dash-pending').innerText = pending;
-            document.getElementById('dash-progress-bar').style.width = `${pct}%`;
-            document.getElementById('dash-progress-text').innerText = `${pct}% Concluído`;
-        }
-
-        function getPeriodColor(period) {
-            if(period === 'Manhã') return 'bg-amber-50 text-amber-700 border border-amber-100';
-            if(period === 'Tarde') return 'bg-orange-50 text-orange-700 border border-orange-100';
-            return 'bg-purple-50 text-purple-700 border border-purple-100';
-        }
-
-        // CORREÇÃO CRÍTICA: Agora injeta chaves de controle vazias exigidas pelas regras do Firebase
-        document.getElementById('form-add-task').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const system = document.getElementById('input-system').value.trim().toUpperCase();
-            const description = document.getElementById('input-task').value.trim();
-            const period = document.getElementById('select-period').value;
-            try {
-                await addDoc(collection(db, "tasks"), {
-                    system: system, 
-                    description: description, 
-                    period: period,
-                    lastCheckedDate: "", 
-                    checkedBy: "", 
-                    checkedTime: ""
-                });
-                document.getElementById('form-add-task').reset();
-            } catch (error) { alert("Erro de permissão no banco: " + error.message); }
-        });
-
-        // Evento: Cadastrar Funcionário
-        document.getElementById('form-add-employee').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('input-emp-name').value.trim().toUpperCase();
-            const registration = document.getElementById('input-emp-reg').value.trim().toUpperCase();
-            const role = document.getElementById('select-emp-role').value;
-            try {
-                await addDoc(collection(db, "employees"), { name, registration, role });
-                document.getElementById('form-add-employee').reset();
-            } catch (error) { alert("Erro de permissão no banco: " + error.message); }
-        });
-
-        // Confirmação de checklist concluído
-        window.confirmTaskCheck = async function() {
-            const id = document.getElementById('modal-task-id').value;
-            const userSelectValue = modalUserSelect.value;
-            
-            if(!userSelectValue || userSelectValue.includes("CADASTRAR EQUIPE")) {
-                alert("É necessário selecionar um funcionário operacional cadastrado!");
-                return;
-            }
-
-            localStorage.setItem('checklist_operator_select_idx', modalUserSelect.selectedIndex);
-            const task = allTasks.find(t => t.id === id);
-            const now = new Date();
-            const timeStr = now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-
-            try {
-                await updateDoc(doc(db, "tasks", id), {
-                    lastCheckedDate: todayStr, checkedBy: userSelectValue, checkedTime: timeStr
-                });
-                await addDoc(collection(db, "history"), {
-                    taskId: id, system: task.system, description: task.description,
-                    user: userSelectValue, timestamp: serverTimestamp()
-                });
-                closeAuthModal();
-            } catch (error) { alert("Erro ao salvar verificação: " + error.message); }
-        }
-
-        window.deleteTask = async function(id, collectionName) {
-            if(confirm("Deseja realmente remover este registro do sistema permanentemente?")) {
-                try { await deleteDoc(doc(db, collectionName, id)); } catch (e) { alert("Erro ao excluir"); }
-            }
-        }
-
-        window.openAuthModal = function(id) {
-            document.getElementById('modal-task-id').value = id;
-            
-            const savedIdx = localStorage.getItem('checklist_operator_select_idx');
-            if(savedIdx && modalUserSelect.options[savedIdx]) {
-                modalUserSelect.selectedIndex = savedIdx;
-            }
-            
-            const modal = document.getElementById('auth-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        window.closeAuthModal = function() {
-            document.getElementById('auth-modal').classList.add('hidden');
-            document.getElementById('auth-modal').classList.remove('flex');
-        }
-
-        window.filterPeriod = function(period) {
-            currentPeriodFilter = period;
-            ['todos', 'manha', 'tarde', 'noite'].forEach(p => {
-                document.getElementById(`btn-p-${p}`).className = "py-2.5 sm:px-5 bg-white text-slate-700 text-xs sm:text-sm rounded-xl font-semibold border border-slate-200 hover:bg-slate-50";
-            });
-            const activeId = period === 'todos' ? 'btn-p-todos' : period === 'Manhã' ? 'btn-p-manha' : period === 'Tarde' ? 'btn-p-tarde' : 'btn-p-noite';
-            document.getElementById(activeId).className = "py-2.5 sm:px-5 bg-blue-600 text-white text-xs sm:text-sm rounded-xl font-semibold shadow";
-            renderChecklists();
-        }
-
-        window.switchTab = function(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
-            document.querySelectorAll('nav button').forEach(el => el.classList.remove('tab-active'));
-            document.getElementById(`btn-${tabId}`).classList.add('tab-active');
-            if(tabId === 'dashboard-tab') updateDashboard();
-        }
-
-        setInterval(() => {
-            const checkDay = new Date().toISOString().split('T')[0];
-            if(checkDay !== todayStr) {
-                todayStr = checkDay;
-                renderChecklists();
-                updateDashboard();
-            }
-        }, 60000);
+        document.getElementById('form-add-task').addEventListener('submit', async (e) => { e.preventDefault(); await addDoc(collection(db,"tasks"),{system:document.getElementById('input-system').value.trim().toUpperCase(),description:document.getElementById('input-task').value.trim(),period:document.getElementById('select-period').value,lastCheckedDate:"",checkedBy:"",checkedTime:""}); e.target.reset(); });
+        document.getElementById('form-add-employee').addEventListener('submit', async (e) => { e.preventDefault(); await addDoc(collection(db,"employees"),{name:document.getElementById('input-emp-name').value.trim().toUpperCase(),registration:document.getElementById('input-emp-reg').value.trim().toUpperCase(),role:document.getElementById('select-emp-role').value}); e.target.reset(); });
+        window.confirmTaskCheck = async () => { const id = document.getElementById('modal-task-id').value; const user = modalUserSelect.value; if(!user || user.includes("⚠️")) return alert("Selecione um operador válido!"); const task = allTasks.find(t=>t.id===id); const time = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); await updateDoc(doc(db,"tasks",id),{lastCheckedDate:todayStr,checkedBy:user,checkedTime:time}); await addDoc(collection(db,"history"),{taskId:id,system:task.system,description:task.description,user:user,timestamp:serverTimestamp()}); closeAuthModal(); };
+        window.deleteTask = async (id, col) => { if(confirm("Excluir permanentemente?")) await deleteDoc(doc(db,col,id)); };
+        window.openAuthModal = (id) => { document.getElementById('modal-task-id').value = id; populateModalSelect(); document.getElementById('auth-modal').classList.remove('hidden'); document.getElementById('auth-modal').classList.add('flex'); };
+        window.closeAuthModal = () => { document.getElementById('auth-modal').classList.add('hidden'); document.getElementById('auth-modal').classList.remove('flex'); };
+        window.filterPeriod = (p) => { currentPeriodFilter = p; ['todos','manha','tarde','noite'].forEach(f=>{ document.getElementById(`btn-p-${f}`).className = "px-4 py-2.5 rounded-xl text-sm font-semibold shadow-sm bg-white text-slate-700 border border-slate-200"; }); const activeMap = {todos:'btn-p-todos',Manhã:'btn-p-manha',Tarde:'btn-p-tarde',Noite:'btn-p-noite'}; const btn=document.getElementById(activeMap[p]); if(btn) btn.className="px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm transition-all flex items-center gap-2 bg-blue-600 text-white border-none"; renderChecklists(); };
+        window.switchTab = (tabId) => { document.querySelectorAll('.tab-content').forEach(el=>el.classList.add('hidden')); document.getElementById(tabId).classList.remove('hidden'); document.querySelectorAll('nav button').forEach(el=>el.classList.remove('tab-active')); document.getElementById(`btn-${tabId}`).classList.add('tab-active'); if(tabId==='dashboard-tab') updateDashboard(); };
     </script>
 </body>
 </html>
